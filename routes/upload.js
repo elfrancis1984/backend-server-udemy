@@ -89,10 +89,38 @@ function subirPorIpo(tipo, id, nombreArchivo, res) {
         });
     }
     if (tipo === 'medicos') {
-
+        Medico.findById(id, (err, medico) => {
+            var pathAnterior = './uploads/medicos/' + medico.img;
+            // Si existe, elimina la imagen anterior
+            if (fs.existsSync(pathAnterior)) {
+                fs.unlink(pathAnterior);
+            }
+            medico.img = nombreArchivo;
+            medico.save((err, medicoActualizado) => {
+                return res.status(200).json({
+                    ok: true,
+                    mensaje: 'Imagen actualizada',
+                    medico: medicoActualizado
+                });
+            });
+        });
     }
     if (tipo === 'hospitales') {
-
+        Hospital.findById(id, (err, hospital) => {
+            var pathAnterior = './uploads/hospitales/' + hospital.img;
+            // Si existe, elimina la imagen anterior
+            if (fs.existsSync(pathAnterior)) {
+                fs.unlink(pathAnterior);
+            }
+            hospital.img = nombreArchivo;
+            hospital.save((err, hospitalActualizado) => {
+                return res.status(200).json({
+                    ok: true,
+                    mensaje: 'Imagen actualizada',
+                    hospital: hospital
+                });
+            });
+        });
     }
 }
 
