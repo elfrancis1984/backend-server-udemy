@@ -71,6 +71,15 @@ app.put('/:tipo/:id', (req, res, next) => {
 function subirPorIpo(tipo, id, nombreArchivo, res) {
     if (tipo === 'usuarios') {
         Usuario.findById(id, (err, usuario) => {
+
+            if (!usuario) {
+                return res.status(400).json({
+                    ok: false,
+                    mensaje: 'Usuario no existe',
+                    error: { message: err }
+                });
+            }
+
             var pathAnterior = './uploads/usuarios/' + usuario.img;
 
             // Si existe, elimina la imagen anterior
@@ -80,6 +89,7 @@ function subirPorIpo(tipo, id, nombreArchivo, res) {
 
             usuario.img = nombreArchivo;
             usuario.save((err, usuarioActualizado) => {
+                usuarioActualizado.password = ':)';
                 return res.status(200).json({
                     ok: true,
                     mensaje: 'Imagen actualizada',
@@ -90,6 +100,13 @@ function subirPorIpo(tipo, id, nombreArchivo, res) {
     }
     if (tipo === 'medicos') {
         Medico.findById(id, (err, medico) => {
+            if (!medico) {
+                return res.status(400).json({
+                    ok: false,
+                    mensaje: 'Medico no existe',
+                    error: { message: err }
+                });
+            }
             var pathAnterior = './uploads/medicos/' + medico.img;
             // Si existe, elimina la imagen anterior
             if (fs.existsSync(pathAnterior)) {
@@ -107,6 +124,13 @@ function subirPorIpo(tipo, id, nombreArchivo, res) {
     }
     if (tipo === 'hospitales') {
         Hospital.findById(id, (err, hospital) => {
+            if (!hospital) {
+                return res.status(400).json({
+                    ok: true,
+                    mensaje: 'Hospital no existe',
+                    error: { message: err }
+                });
+            }
             var pathAnterior = './uploads/hospitales/' + hospital.img;
             // Si existe, elimina la imagen anterior
             if (fs.existsSync(pathAnterior)) {
